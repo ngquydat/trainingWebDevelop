@@ -30,15 +30,19 @@ io.on('connection', (socket) => {
     //listen on change_username
     socket.on('change_username', (data) => {
     	console.log(socket.username+' has changed name to: '+data.username)
+        socket.username = data.username
     })
 
     //listen on new_message
     socket.on('new_message', (data) => {
     	console.log('Message from '+socket.username+': '+data.message)
+        //broadcast the new message
+        io.sockets.emit('new_message', {message : data.message, username : socket.username})
     })
 
     //listen on typing
     socket.on('typing', (data) => {
     	console.log(socket.username+' is typing ...')
+    	socket.broadcast.emit('typing', {username : socket.username})
     })
 })

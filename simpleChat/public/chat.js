@@ -27,4 +27,16 @@ $(function(){
 		console.log("user typing ...")
 		socket.emit('typing')
 	})
+
+	//Listen on new_message
+	socket.on("new_message", (data) => {
+		feedback.html('');
+		message.val('');
+		chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
+	})
+
+	//Listen on typing
+	socket.on('typing', (data) => {
+		feedback.html("<p><i>" + data.username + " is typing a message..." + "</i></p>")
+	})
 });
