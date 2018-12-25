@@ -17,3 +17,13 @@ app.get('/', (req, res) => {
 server = app.listen(port, function() {
     console.log('listening on *:'+port)
 })
+
+//socket.io instantiation
+const io = require("socket.io")(server)
+
+//listen on every connection
+io.on('connection', (socket) => {
+	//default username
+	socket.username = "Anonymous"
+	console.log(socket.username+' connected')
+})
