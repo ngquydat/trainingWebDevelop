@@ -10,8 +10,7 @@ app.use(express.static('public'))
 
 //routes
 app.get('/', (req, res) => {
-	res.writeHead(200, {'Content-Type': 'text/plain'});
-	res.end('Hello World!');
+	res.render('index')
 })
 
 //Listen on port 3000
