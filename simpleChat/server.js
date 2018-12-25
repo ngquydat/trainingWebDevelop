@@ -26,4 +26,19 @@ io.on('connection', (socket) => {
 	//default username
 	socket.username = "Anonymous"
 	console.log(socket.username+' connected')
+
+    //listen on change_username
+    socket.on('change_username', (data) => {
+    	console.log(socket.username+' has changed name to: '+data.username)
+    })
+
+    //listen on new_message
+    socket.on('new_message', (data) => {
+    	console.log('Message from '+socket.username+': '+data.message)
+    })
+
+    //listen on typing
+    socket.on('typing', (data) => {
+    	console.log(socket.username+' is typing ...')
+    })
 })
