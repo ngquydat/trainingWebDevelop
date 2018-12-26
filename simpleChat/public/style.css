@@ -1,9 +1,9 @@
 @mixin vertical-align {
-  position: relative;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 * {
@@ -28,7 +28,8 @@ h1 {
     margin: 0px;
 }
 
-div#change_username, section#input_zone {
+div#change_username,
+div#input_zone {
     border: 1px outset #8258FA;
 }
 
@@ -38,13 +39,13 @@ div#change_username {
     background-color: #BCA9F5;
 }
 
-section#chatroom {
+div#chatroom {
     border: 1px inset #8258FA;
     height: 85%;
     overflow: auto;
 }
 
-section#input_zone {
+div#input_zone {
     height: 7%;
     text-align: center;
     background-color: #BCA9F5;
@@ -62,7 +63,7 @@ input#username {
     font-family: 'Comfortaa', sans-serif;
 }
 
-input#message {
+input#inputMessage {
     display: inline-block;
     width: 88%;
     height: 70%;
@@ -86,9 +87,67 @@ p.message {
 }
 
 .message:nth-child(even) {
-    background-color: #81DAF5;
+    background-color: #FFFFFF;
 }
 
 .message:nth-child(odd) {
-    background-color: #81BEF7;
+    background-color: #E0E0E0;
+}
+
+.page {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+/* Login Page */
+
+.login.page {
+    background-color: #000;
+}
+
+.login.page .form {
+    height: 100px;
+    margin-top: -100px;
+    position: absolute;
+
+    text-align: center;
+    top: 50%;
+    width: 100%;
+}
+
+.login.page .form .usernameInput {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #fff;
+    outline: none;
+    padding-bottom: 15px;
+    text-align: center;
+    width: 400px;
+}
+
+.login.page .title {
+    font-size: 200%;
+}
+
+.login.page .usernameInput {
+    font-size: 200%;
+    letter-spacing: 3px;
+}
+
+.login.page .title,
+.login.page .usernameInput {
+    color: #fff;
+    font-weight: 100;
+}
+
+.chat.page {
+    display: none;
+}
+
+.log {
+    color: gray;
+    font-size: 70%;
+    margin: 5px;
+    text-align: center;
 }
