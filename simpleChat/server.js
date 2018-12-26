@@ -25,54 +25,67 @@ var numUsers = 0
 const io = require("socket.io")(server)
 
 //listen on every connection
-io.on('connection', (socket) => {
-    var joinedUser = false;
+io.on('connection', (client) => {
+    // client.on('register', handleRegister)
+    // client.on('join', handlejoin)
+    // client.on('leave', handleLeave)
+    // client.on('message', handleMessage)
+    // client.on('chatrooms', handleGetChatrooms)
+    // client.on('availableUsers', handleGetAvailableUsers)
+    // client.on('disconnect', handleDisconnect)
+    // client.on('error', handleError)
+    var loggedInUser = false;
 
     //default username
-    socket.username = "Anonymous"
-    console.log(socket.username + ' connected')
+    client.username = "Anonymous"
+    console.log(client.username + ' connected - clientId: '+client.id)
 
     // update guest number
     ++numGuests
-    io.sockets.emit('guest join', { numUsers: numUsers, numGuests: numGuests })
+    io.sockets.emit('guest login', { numUsers: numUsers, numGuests: numGuests })
 
     //listen on new_message
-    socket.on('new_message', (data) => {
-        console.log('Message from ' + socket.username + ': ' + data.message)
+    client.on('new_message', (data) => {
+        console.log('Message from ' + client.username + ': ' + data.message)
         //broadcast the new message
-        io.sockets.emit('new_message', { message: data.message, username: socket.username })
+        io.sockets.emit('new_message', { message: data.message, username: client.username })
     })
 
     //listen on typing
-    socket.on('typing', (data) => {
-        socket.broadcast.emit('typing', { username: socket.username })
+    client.on('typing', (data) => {
+        client.broadcast.emit('typing', { username: client.username })
     })
 
     // when the client emits 'stop typing', we broadcast it to others
-    socket.on('stop typing', () => {
-        socket.broadcast.emit('stop typing', { username: socket.username })
+    client.on('stop typing', () => {
+        client.broadcast.emit('stop typing', { username: client.username })
     })
 
-    // when the client emits 'user join', this listens and executes
-    socket.on('user join', (username) => {
-        if (joinedUser) return
+    // when the client emits 'login', this listens and executes
+    client.on('login', (username) => {
+        if (loggedInUser) return
         // we store the username in the socket session for this client
-        socket.username = username
+        client.username = username
         ++numUsers
-        joinedUser = true
-        socket.emit('user join', { username: socket.username, numUsers: numUsers, numGuests: numGuests })
+        loggedInUser = true
+        client.emit('login', { username: client.username, numUsers: numUsers, numGuests: numGuests })
         // echo globally (all clients) that a person has connected
-        socket.broadcast.emit('user join', { username: socket.username, numUsers: numUsers, numGuests: numGuests })
-        console.log(socket.username + " joined")
+        client.broadcast.emit('login', { username: client.username, numUsers: numUsers, numGuests: numGuests })
+        console.log(client.username + " loggedIn")
     })
 
     // when the user disconnects.. perform this
-    socket.on('disconnect', () => {
-        if (joinedUser) {
+    client.on('disconnect', () => {
+        if (loggedInUser) {
             --numUsers
         }
         --numGuests
-        socket.broadcast.emit('user left', { username: socket.username, numUsers: numUsers, numGuests: numGuests })
-        console.log(socket.username + " left")
+        client.broadcast.emit('user left', { username: client.username, numUsers: numUsers, numGuests: numGuests })
+        console.log(client.username + " left", client.id)
+    })
+
+    client.on('error', function (err) {
+        console.log('received error from client:', client.id)
+        console.log(err)
     })
 })

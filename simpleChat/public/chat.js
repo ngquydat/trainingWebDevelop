@@ -38,7 +38,7 @@ $(function() {
                     $currentInput = $inputMessage.focus()
 
                     // Tell the server your username
-                    socket.emit('user join', username)
+                    socket.emit('login', username)
                 }
             }
         }
@@ -64,15 +64,15 @@ $(function() {
         }
     })
 
-    // Whenever the server emits 'user join', log the user join message
-    socket.on('user join', (data) => {
+    // Whenever the server emits 'login', log the login message
+    socket.on('login', (data) => {
         connected = true
         $('#numUsers').html("participants: " + data.numUsers + " - total viewers: " + data.numGuests);
-        $('#info').html('<p>' + data.username + ' join</p>')
+        $('#info').html('<p>' + data.username + ' login</p>')
     })
 
-    // Whenever the server emits 'user join', log the user join message
-    socket.on('guest join', (data) => {
+    // Whenever the server emits 'login', log the login message
+    socket.on('guest login', (data) => {
         $('#numUsers').html("participants: " + data.numUsers + " - total viewers: " + data.numGuests);
     })
 
