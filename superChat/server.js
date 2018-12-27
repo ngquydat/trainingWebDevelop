@@ -38,16 +38,16 @@ const bodyParser = require('body-parser'); // Parse incoming request bodies in a
 app.use(express.static('./'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.get('/',function(req,res){
+app.get('/', function(req,res){
     res.sendFile(path.resolve(__dirname+"/views/index.html"));
 });
-app.post('/register',function(req,res){
+app.post('/register', function(req,res){
     console.log(req.body);
     newUser = req.body;
     // 1. check user is exists
     db.user.findOne({"username":newUser.username}, function(err, doc){
         if (err) res.json(err);
-        else if (doc) res.send('User already found');
+        else if (doc) res.send('User already registered');
         else {
             // 2. if not exists, add new user
             db.user.create(newUser, function(err, doc){
@@ -57,7 +57,18 @@ app.post('/register',function(req,res){
         }
     });
 });
-
+app.post('/login', function(req,res){
+    loginUser = req.body;
+    console.log(loginUser);
+    currentUser = loginUser.username;
+    db.user.findOne({"username":loginUser.username,"password":loginUser.password}, function(err,doc){
+        if (err) res.send(err);
+        else if (doc) res.send('success');
+        else {
+            res.send('User has not registered');
+        }
+    });
+});
 // listen on every connection
 io.on('connection', (client) => {
 	// emit to client 'currentUser'

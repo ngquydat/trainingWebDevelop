@@ -1,0 +1,11 @@
+body {
+	padding: 10px;
+}
+
+.group-chat-box, .friend-box, .online-user-box {
+    padding: 10px;
+    margin: 5px;
+    height: 275px;
+    overflow: auto;
+    border: 1px solid #a4c6b5;
+}

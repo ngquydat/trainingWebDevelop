@@ -43,14 +43,19 @@ app.controller('loginController',['$scope','$http','$state',function($scope,$htt
         'username' : '',
         'password' : '',
     };
-
+    // get loginUser
+    $scope.loginUser = {
+        'username' : '',
+        'password' : ''
+    };
     // call API /register to execute FORM REGISTER
     $scope.register = function() {
         registerUrl = 'http://'+location.host+'/register';
         console.log($scope.newUser);
         $http({method:'POST', url:registerUrl, data:$scope.newUser}).then(
             function(data){
-                console.log('regist success');
+                if (data.data=="success") console.log('regist success');
+                else console.log('regist error: '+data.data);
             },
             function(err){
                 console.log('regist error');
@@ -58,6 +63,24 @@ app.controller('loginController',['$scope','$http','$state',function($scope,$htt
         );
     }
     // call API /login to execute FORM LOGIN
+    $scope.login = function() {
+        loginUrl = 'http://'+location.host+'/login';
+        console.log($scope.loginUser);
+        $http({method:'POST', url:loginUrl, data:$scope.loginUser}).then(
+            function(data){
+                if (data.data=="success") {
+                    console.log('login success');
+                    $state.go('afterLogin');
+                } else {
+                    console.log('login error: '+data.data);
+                }
+            },
+            function(err){
+
+            }
+        );
+    }
+    //
     $scope.Guest = function() {
         $state.go('afterLogin');
     }
