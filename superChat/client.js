@@ -38,8 +38,25 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$urlRo
 
 app.controller('loginController',['$scope','$http','$state',function($scope,$http,$state){
     console.log('loginController');
+    // get newUser
+    $scope.newUser = {
+        'username' : '',
+        'password' : '',
+    };
 
     // call API /register to execute FORM REGISTER
+    $scope.register = function() {
+        registerUrl = 'http://'+location.host+'/register';
+        console.log($scope.newUser);
+        $http({method:'POST', url:registerUrl, data:$scope.newUser}).then(
+            function(data){
+                console.log('regist success');
+            },
+            function(err){
+                console.log('regist error');
+            }
+        );
+    }
     // call API /login to execute FORM LOGIN
     $scope.Guest = function() {
         $state.go('afterLogin');

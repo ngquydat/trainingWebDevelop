@@ -18,7 +18,8 @@ mongoose.connect("mongodb://localhost:27017/superchat", { useNewUrlParser: true 
 mongoose.connection.on('open', function (ref) {
     console.log('Connected to mongo server.');
 });
-module.exports.user=mongoose.model('User',new Schema({
+const db = module.exports;
+db.user = mongoose.model('User',new Schema({
     name:String,
     password: String,
     email:String,
@@ -33,9 +34,28 @@ module.exports.user=mongoose.model('User',new Schema({
  * app.post('/friend_request', handleFriendRequest);  // emit to 'target client': event 'friendConfirm'
  * app.post('/friend_request/confirmed', handleFriendRequestConfirmed); // emit to 'destination client' and 'target client': event 'friendEstablished'
  */
+const bodyParser = require('body-parser'); // Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
 app.use(express.static('./'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 app.get('/',function(req,res){
-	res.sendFile(path.resolve(__dirname+"/views/index.html"));
+    res.sendFile(path.resolve(__dirname+"/views/index.html"));
+});
+app.post('/register',function(req,res){
+    console.log(req.body);
+    newUser = req.body;
+    // 1. check user is exists
+    db.user.findOne({"username":newUser.username}, function(err, doc){
+        if (err) res.json(err);
+        else if (doc) res.send('User already found');
+        else {
+            // 2. if not exists, add new user
+            db.user.create(newUser, function(err, doc){
+                if(err) res.json(err);
+                else res.send("success");
+            });
+        }
+    });
 });
 
 // listen on every connection
