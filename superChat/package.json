@@ -1,0 +1,33 @@
+{
+  "name": "super-chat",
+  "version": "1.0.0",
+  "description": "chat app like fb messenger",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ngquydat/trainingWebDevelop.git"
+  },
+  "keywords": [
+    "chat",
+    "nodejs",
+    "angular",
+    "socket.io",
+    "mongodb"
+  ],
+  "author": "ngquydat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ngquydat/trainingWebDevelop/issues"
+  },
+  "homepage": "https://github.com/ngquydat/trainingWebDevelop#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongoose": "^5.4.1",
+    "nodemon": "^1.18.9",
+    "path": "^0.12.7",
+    "socket.io": "^2.2.0"
+  }
+}
