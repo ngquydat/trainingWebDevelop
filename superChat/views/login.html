@@ -1,0 +1,29 @@
+<h1>Welcome to LOGIN SYSTEM </h1>
+<button type="button" class="btn btn-primary btn-block" ng-click="Guest()"><span class="glyphicon glyphicon-off"></span>Chat as guest</button><br>
+<!-- LOGIN FORM -->
+<div>
+   	<form>
+        <input class="form-control" type="text" name='username' placeholder="username"/><br>
+        <input class="form-control" type="password" name='password' placeholder="password"/><br>
+        <button type="button" class="btn btn-primary btn-block" ng-click="login()"><span class="glyphicon glyphicon-off"></span>Login</button>
+        <div class="form-group pull-right">Not a member?<a href="#" data-toggle="modal" data-target="#myModal">Register</a></div>
+    </form>
+</div>
+<!-- REGISTER FORM -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <h4 class="text-center"><span class="glyphicon glyphicon-lock"></span> Register</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="text" class="form-control" id="handle" placeholder="Enter Handle">
+                    <input type="password" class="form-control" id="psw" placeholder="Enter password">
+                    <input type="text" class="form-control" id="email" placeholder="Enter Email">
+                    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span>Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
