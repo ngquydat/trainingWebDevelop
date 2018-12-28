@@ -103,7 +103,12 @@ app.controller('mypageController',['$scope','socket','$http','$state',function($
         console.log(data); //JSON.stringify(data)
     });
     // Listen friendList
-    // Listen onlineList
+    socket.on('friendList', function(data){
+        $scope.$apply(function(){
+            $scope.friends = data;
+        });
+        console.log(data);
+    })
     // Listen private messages
     // Listen group messages
     // Listen friend request confirm

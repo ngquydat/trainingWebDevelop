@@ -78,6 +78,10 @@ io.on('connection', (client) => {
 	db.user.find({}, function(err,users){
 		if (users!==null) io.emit('userList', users);
 	});
+	// emit to client 'friendList'
+	db.user.findOne({"username":currentUser}, function(err,user){
+		if (user!==null) io.to(client.id).emit('friendList', user.friends);
+	});
     // client.on('privateMessage', handlePrivateMessage)
     // client.on('groupMessage', handleGroupMessage)
     // client.on('disconnect', handleDisconnect)
