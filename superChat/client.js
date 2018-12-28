@@ -108,15 +108,45 @@ app.controller('mypageController',['$scope','socket','$http','$state',function($
             $scope.friends = data;
         });
         console.log(data);
-    })
+    });
     // Listen private messages
     // Listen group messages
+    socket.on('groupMessage', function(data){
+        var div = document.createElement('div');
+        var isMyMsg = false;
+        if ($scope.currentUser == data.username) isMyMsg = true;
+        var pClass = isMyMsg?'right':'left';
+        div.innerHTML='<p class="group-message '+pClass+'">\
+                            <span class="username">'+data.username+':</span>\
+                            <span class="text">'+data.groupMessage+'</span>\
+                            <span class="timestamp"> ('+getDate()+')</span>\
+                        </p>';
+        document.getElementById("group-messages").appendChild(div);
+        document.getElementById("group-messages").scrollTop=document.getElementById("group-messages").scrollHeight;
+    });
     // Listen friend request confirm
     // Listen friend established
+    // Emit group message
+    $scope.sendGroupMessage = function(message){
+        socket.emit('groupMessage', message);
+        $scope.groupMessage=null;
+    };
 
     // call API /friend_request to execute FORM FRIEND_REQUEST
     // call API /friend_request/confirm to execute FORM FRIEND_REQUEST_CONFIRM
     $scope.Logout = function() {
         $state.go('beforeLogin');
+    };
+    var getDate=function(){
+        monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October","November", "December"];
+        date = new Date();
+        hour=date.getHours();
+        period="AM";
+        if (hour>12){
+            hour=hour%12;
+            period="PM";
+        }
+        form_date=monthNames[date.getMonth()]+" "+date.getDate()+", "+hour+":"+date.getMinutes()+" "+period;
+        return form_date;
     }
 }]);

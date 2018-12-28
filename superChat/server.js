@@ -71,19 +71,24 @@ app.post('/login', function(req,res){
 });
 // listen on every connection
 io.on('connection', (client) => {
-	// emit to client 'currentUser'
-	console.log(currentUser+" connected");
-	io.to(client.id).emit('currentUser', currentUser);
-	// emit to total client 'userList'
-	db.user.find({}, function(err,users){
-		if (users!==null) io.emit('userList', users);
-	});
-	// emit to client 'friendList'
-	db.user.findOne({"username":currentUser}, function(err,user){
-		if (user!==null) io.to(client.id).emit('friendList', user.friends);
-	});
+    client.username = currentUser;
+    // emit to client 'currentUser'
+    console.log(client.username+" connected");
+    io.to(client.id).emit('currentUser', client.username);
+    // emit to total client 'userList'
+    db.user.find({}, function(err,users){
+        if (users!==null) io.emit('userList', users);
+    });
+    // emit to client 'friendList'
+    db.user.findOne({"username":client.username}, function(err,user){
+        if (user!==null) io.to(client.id).emit('friendList', user.friends);
+    });
     // client.on('privateMessage', handlePrivateMessage)
     // client.on('groupMessage', handleGroupMessage)
+    client.on('groupMessage', function(msg){
+        console.log(client.username+" send a group message: "+msg);
+        io.emit('groupMessage', {username:client.username,groupMessage:msg});
+    })
     // client.on('disconnect', handleDisconnect)
     // client.on('error', handleError)
 });

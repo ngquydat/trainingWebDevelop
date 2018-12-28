@@ -9,3 +9,28 @@ body {
     overflow: auto;
     border: 1px solid #a4c6b5;
 }
+.group-message {
+	line-height: 3em;
+	padding: 5px;
+	border-radius: 5px;
+	display: inline-block;
+}
+.group-message.right {
+	background-color: #95bdef;
+}
+
+.group-message.left {
+	background-color: #efebeb;
+}
+
+.group-message > .username {
+	font-weight: bold;
+	text-decoration: underline;
+	margin-right: 5px;
+}
+
+.group-message > .timestamp {
+	font-style: italic;
+	color: #a09c9c;
+	margin-left: 5px;
+}
