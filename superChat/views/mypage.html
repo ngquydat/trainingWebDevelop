@@ -22,10 +22,10 @@
 <!-- USERS -->
 <div>
     <h3 class="box-title">Users <span class="label label-danger">{{users.length}}</span></h3>
-    <div class="online-user-box">
+    <div class="user-box">
 	    <ul>
 	        <li ng-repeat="user in users">
-	            <a>{{user.username}}</a>
+	            <a ng-click="showPrivateChatBox(user.username)">{{user.username}}</a>
 	        </li>
 	    </ul>
 	</div>

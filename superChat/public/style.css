@@ -2,34 +2,40 @@ body {
 	padding: 10px;
 }
 
-.group-chat-box, .friend-box, .online-user-box {
+.group-chat-box, .friend-box, .user-box,
+.private-chat-box > .box-body {
     padding: 10px;
     margin: 5px;
     height: 275px;
     overflow: auto;
     border: 1px solid #a4c6b5;
 }
-.group-message {
+.group-message,
+.private-message {
 	line-height: 3em;
 	padding: 5px;
 	border-radius: 5px;
 	display: inline-block;
 }
-.group-message.right {
+.group-message.right,
+.private-message.right {
 	background-color: #95bdef;
 }
 
-.group-message.left {
+.group-message.left,
+.private-message.left {
 	background-color: #efebeb;
 }
 
-.group-message > .username {
+.group-message > .username,
+.private-message > .username {
 	font-weight: bold;
 	text-decoration: underline;
 	margin-right: 5px;
 }
 
-.group-message > .timestamp {
+.group-message > .timestamp,
+.private-message > .timestamp {
 	font-style: italic;
 	color: #a09c9c;
 	margin-left: 5px;

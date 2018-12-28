@@ -86,7 +86,7 @@ app.controller('loginController',['$scope','$http','$state',function($scope,$htt
     }
 }]);
 
-app.controller('mypageController',['$scope','socket','$http','$state',function($scope,socket,$http,$state){
+app.controller('mypageController',['$scope','socket','$http','$state','$compile',function($scope,socket,$http,$state, $compile){
     console.log('mypageController');
 
     // Listen currentUser
@@ -110,6 +110,47 @@ app.controller('mypageController',['$scope','socket','$http','$state',function($
         console.log(data);
     });
     // Listen private messages
+    socket.on('privateMessage', function(data){
+        var friend = data.receiver;
+        var isMyMsg = true;
+        if ($scope.currentUser==data.receiver) {
+            friend = data.sender;
+            isMyMsg = false;
+        }
+        if ($("#"+friend+"01").length==0) showPrivateChatBox(friend);
+        var pClass = isMyMsg?'right':'left';
+        var div = document.createElement('div');
+        div.innerHTML='<p class="private-message '+pClass+'">\
+                            <span class="username">'+data.sender+':</span>\
+                            <span class="text">'+data.msg+'</span>\
+                            <span class="timestamp"> ('+data.date+')</span>\
+                        </p>';
+        console.log(friend);
+        $("#"+friend+"01 > .box-body")[0].appendChild(div);
+        $("#"+friend+"01 > .box-body")[0].scrollTop=$("#"+friend+"01 > .box-body")[0].scrollHeight;
+    });
+    // Show private chat box
+    $scope.showPrivateChatBox = function(username){
+        showPrivateChatBox(username);
+    };
+    var showPrivateChatBox = function(username){
+        div = document.createElement('div');
+        div.innerHTML='<div class="private-chat-box" id="'+username+'01">\
+                            <div class="box-header">'+username+'</div>\
+                            <div class="box-body"></div>\
+                            <div class="box-footer form-inline">\
+                                <input type="text" name="message" placeholder="Type Message ..." class="form-control" ng-model="privateMessage">\
+                                <button type="button" class="btn btn-primary btn-flat" ng-click="sendPrivateMessage(\''+username+'\',privateMessage)">Send</button>\
+                            </div>\
+                    </div>';
+        $compile(div)($scope);
+        $('.user-box').parent()[0].appendChild(div);
+    };
+    $scope.sendPrivateMessage = function(username, msg){
+        console.log($scope.currentUser+" send a private messsage to "+username+": "+msg);
+        socket.emit('privateMessage', {username:username,msg:msg,date:getDate()});
+        $scope.privateMessage=null;
+    };
     // Listen group messages
     socket.on('groupMessage', function(data){
         var div = document.createElement('div');

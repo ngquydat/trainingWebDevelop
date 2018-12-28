@@ -7,6 +7,7 @@ const path = require('path');
 const port = 3000;
 // Init variables
 var currentUser='Anonymous';
+var clientIds = {};
 
 /*
  * Setting Mongodb
@@ -72,6 +73,7 @@ app.post('/login', function(req,res){
 // listen on every connection
 io.on('connection', (client) => {
     client.username = currentUser;
+    clientIds[client.username] = client.id;
     // emit to client 'currentUser'
     console.log(client.username+" connected");
     io.to(client.id).emit('currentUser', client.username);
@@ -84,11 +86,16 @@ io.on('connection', (client) => {
         if (user!==null) io.to(client.id).emit('friendList', user.friends);
     });
     // client.on('privateMessage', handlePrivateMessage)
+    client.on('privateMessage', function(data){
+        console.log(client.username+" send a private message to "+data.username+": "+data.msg);
+        io.to(clientIds[client.username]).emit('privateMessage', {sender:client.username,receiver:data.username,msg:data.msg,date:data.date});
+        io.to(clientIds[data.username]).emit('privateMessage', {sender:client.username,receiver:data.username,msg:data.msg,date:data.date});
+    });
     // client.on('groupMessage', handleGroupMessage)
     client.on('groupMessage', function(msg){
         console.log(client.username+" send a group message: "+msg);
         io.emit('groupMessage', {username:client.username,groupMessage:msg});
-    })
+    });
     // client.on('disconnect', handleDisconnect)
     // client.on('error', handleError)
 });
