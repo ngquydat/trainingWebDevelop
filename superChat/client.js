@@ -96,6 +96,12 @@ app.controller('mypageController',['$scope','socket','$http','$state',function($
         console.log("Get currentUser : "+$scope.currentUser);
     });
     // Listen userList
+    socket.on('userList', function(data){
+        $scope.$apply(function(){
+            $scope.users = data;
+        });
+        console.log(data); //JSON.stringify(data)
+    });
     // Listen friendList
     // Listen onlineList
     // Listen private messages

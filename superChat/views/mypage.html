@@ -10,24 +10,22 @@
 </div>
 <!-- FRIENDS -->
 <div>
-    <h3 class="box-title">Friends</h3>
-	<span class="label label-danger">{{friends.length}}</span>
+    <h3 class="box-title">Friends <span class="label label-danger">{{friends.length}}</span></h3>
 	<div class="friend-box">
 	    <ul>
 	        <li ng-repeat="friend in friends">
-	            <a>{{friend}}</a>
+	            <a>{{friend.username}}</a>
 	        </li>
 	    </ul>
 	</div>
 </div>
-<!-- ONLINE USERS -->
+<!-- USERS -->
 <div>
-    <h3 class="box-title">Online Members</h3>
-	<span class="label label-danger">{{onlineUsers.length}}</span>
+    <h3 class="box-title">Users <span class="label label-danger">{{users.length}}</span></h3>
     <div class="online-user-box">
 	    <ul>
-	        <li ng-repeat="user in onlineUsers">
-	            <a>{{user}}</a>
+	        <li ng-repeat="user in users">
+	            <a>{{user.username}}</a>
 	        </li>
 	    </ul>
 	</div>

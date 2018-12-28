@@ -74,6 +74,10 @@ io.on('connection', (client) => {
 	// emit to client 'currentUser'
 	console.log(currentUser+" connected");
 	io.to(client.id).emit('currentUser', currentUser);
+	// emit to total client 'userList'
+	db.user.find({}, function(err,users){
+		if (users!==null) io.emit('userList', users);
+	});
     // client.on('privateMessage', handlePrivateMessage)
     // client.on('groupMessage', handleGroupMessage)
     // client.on('disconnect', handleDisconnect)
