@@ -102,7 +102,34 @@ app.controller('loginController',['$scope','$http','$state',function($scope,$htt
 
 app.controller('mypageController',['$scope','socket','$http','$state','$compile',function($scope,socket,$http,$state, $compile){
     console.log('mypageController');
+    var typing = false
+    // typing event
+    $("#group-chat-input").bind("keydown keypress", function (event) {
+        if (!typing) {
+            typing = true
+            socket.emit('groupChatTyping')
+        }
+        lastTypingTime = (new Date()).getTime()
 
+        setTimeout(() => {
+            var typingTimer = (new Date()).getTime()
+            var timeDiff = typingTimer - lastTypingTime
+            if (timeDiff >= 400 && typing) {
+                socket.emit('groupChatStopTyping')
+                typing = false
+            }
+        }, 400)
+    });
+    socket.on('groupChatTyping', function(typingUser){
+        if ($scope.currentUser==typingUser) return;
+        $('#group-chat-typing').html("<p class='typing'><i>" + typingUser + " is typing a message..." + "</i></p>")
+    });
+    socket.on('groupChatStopTyping', function(typingUser){
+        if ($scope.currentUser==typingUser) return;
+        $('#group-chat-typing .typing').fadeOut(function() {
+            $(this).remove();
+        });
+    });
     // Listen currentUser
     socket.on('currentUser', function(currentUser){
         $scope.currentUser = currentUser;

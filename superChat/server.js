@@ -96,6 +96,13 @@ io.on('connection', (client) => {
         console.log(client.username+" send a group message: "+msg);
         io.emit('groupMessage', {username:client.username,groupMessage:msg});
     });
+    // someone Typing
+    client.on('groupChatTyping', function(){
+        io.emit('groupChatTyping', client.username);
+    });
+    client.on('groupChatStopTyping', function(){
+        io.emit('groupChatStopTyping', client.username);
+    });
     // client.on('disconnect', handleDisconnect)
     // client.on('error', handleError)
 });

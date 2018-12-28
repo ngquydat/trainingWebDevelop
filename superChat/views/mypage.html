@@ -6,7 +6,8 @@
     <h3 class="box-title">Group Chat</h3>
     <!-- Conversations are loaded here -->
     <div class="group-chat-box" id="group-messages"></div>
-    <input type="text" placeholder="Type Message ..." class="form-control" ng-model="groupMessage" my-enter="sendGroupMessage('{{groupMessage}}')" style="width: 100%">
+    <span id="group-chat-typing"></span><br>
+    <input id="group-chat-input" type="text" placeholder="Type Message ..." class="form-control" ng-model="groupMessage" my-enter="sendGroupMessage('{{groupMessage}}')" style="width: 100%">
 </div>
 <!-- FRIENDS -->
 <div style="display: none">
