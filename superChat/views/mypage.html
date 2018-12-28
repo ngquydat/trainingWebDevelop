@@ -1,15 +1,15 @@
 <h1>Hi {{currentUser}} ! Here is your HOME PAGE</h1>
 <a class="btn btn-primary btn-block" href="#"><span class="glyphicon glyphicon-off"></span>Logout</a>
+<div class="row">
 <!-- GROUP MESSAGES -->
-<div class="form-inline">
+<div class="col-md-6 pull-left form-inline">
     <h3 class="box-title">Group Chat</h3>
     <!-- Conversations are loaded here -->
     <div class="group-chat-box" id="group-messages"></div>
-    <input type="text" name="message" placeholder="Type Message ..." class="form-control" ng-model="groupMessage">
-    <button type="button" class="btn btn-primary btn-flat" ng-click="sendGroupMessage(groupMessage)">Send</button>
+    <input type="text" placeholder="Type Message ..." class="form-control" ng-model="groupMessage" my-enter="sendGroupMessage('{{groupMessage}}')" style="width: 100%">
 </div>
 <!-- FRIENDS -->
-<div>
+<div style="display: none">
     <h3 class="box-title">Friends <span class="label label-danger">{{friends.length}}</span></h3>
 	<div class="friend-box">
 	    <ul>
@@ -20,7 +20,7 @@
 	</div>
 </div>
 <!-- USERS -->
-<div>
+<div class="col-md-6 pull-right">
     <h3 class="box-title">Users <span class="label label-danger">{{users.length}}</span></h3>
     <div class="user-box">
 	    <ul>
@@ -29,4 +29,9 @@
 	        </li>
 	    </ul>
 	</div>
+</div>
+</div>
+<!-- PRIVATE CHAT BOX -->
+<div id="private-chat-area">
+	
 </div>

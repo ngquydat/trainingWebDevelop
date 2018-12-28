@@ -1,42 +1,58 @@
 body {
-	padding: 10px;
+    padding: 10px;
+}
+
+#private-chat-area {
+    bottom: 0;
+    height: 340px;
+    position: fixed;
+    right: 10px;
+    display: inline-block;
+}
+
+.private-chat-box {
+    width: 300px;
+    border: 1px solid #b0b0b0;
+    float: right;
+    margin: 5px;
 }
 
 .group-chat-box, .friend-box, .user-box,
 .private-chat-box > .box-body {
     padding: 10px;
-    margin: 5px;
     height: 275px;
     overflow: auto;
     border: 1px solid #a4c6b5;
 }
 .group-message,
 .private-message {
-	line-height: 3em;
-	padding: 5px;
-	border-radius: 5px;
-	display: inline-block;
+    line-height: 2em;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 90%;
 }
 .group-message.right,
 .private-message.right {
-	background-color: #95bdef;
+    background-color: #95bdef;
 }
 
 .group-message.left,
 .private-message.left {
-	background-color: #efebeb;
+    background-color: #efebeb;
 }
 
 .group-message > .username,
 .private-message > .username {
-	font-weight: bold;
-	text-decoration: underline;
-	margin-right: 5px;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-right: 5px;
 }
 
 .group-message > .timestamp,
 .private-message > .timestamp {
-	font-style: italic;
-	color: #a09c9c;
-	margin-left: 5px;
+    font-size: 80%;
+    font-style: italic;
+    color: #055c77;
+    margin-left: 5px;
 }
