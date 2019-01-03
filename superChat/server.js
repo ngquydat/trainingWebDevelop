@@ -19,6 +19,7 @@ mongoose.connect("mongodb://localhost:27017/superchat", { useNewUrlParser: true 
 mongoose.connection.on('open', function (ref) {
     console.log('Connected to mongo server.');
 });
+mongoose.set('debug', true);
 const db = module.exports;
 db.user = mongoose.model('User',new Schema({
     name:String,
@@ -26,6 +27,12 @@ db.user = mongoose.model('User',new Schema({
     email:String,
     friends:[]
 },{strict: false}));
+db.messages=mongoose.model('message',new Schema({
+    message : String,
+    sender  : String,
+    receiver: String,
+    date    : Date
+}));
 
 /*
  * Setting App API
@@ -88,8 +95,15 @@ io.on('connection', (client) => {
     // client.on('privateMessage', handlePrivateMessage)
     client.on('privateMessage', function(data){
         console.log(client.username+" send a private message to "+data.username+": "+data.msg);
-        io.to(clientIds[client.username]).emit('privateMessage', {sender:client.username,receiver:data.username,msg:data.msg,date:data.date});
-        io.to(clientIds[data.username]).emit('privateMessage', {sender:client.username,receiver:data.username,msg:data.msg,date:data.date});
+        // save msg to db
+        db.messages.create({
+                "message" :data.msg,
+                "sender"  :client.username,
+                "receiver":data.username,
+                "date"    :data.date
+        });
+        io.to(clientIds[client.username]).emit('privateMessage', {sender:client.username,receiver:data.username,message:data.msg,date:data.date});
+        io.to(clientIds[data.username]).emit('privateMessage', {sender:client.username,receiver:data.username,message:data.msg,date:data.date});
     });
     // client.on('groupMessage', handleGroupMessage)
     client.on('groupMessage', function(msg){
@@ -102,6 +116,13 @@ io.on('connection', (client) => {
     });
     client.on('groupChatStopTyping', function(){
         io.emit('groupChatStopTyping', client.username);
+    });
+    // show history messages
+    client.on('showHistoryMessages', function(data){
+        db.messages.find({$or:[{sender:data.user1,receiver:data.user2},{sender:data.user2,receiver:data.user1}]}).sort({date: 1}).exec(function(err,messages){
+            if(err) console.log(err);
+            if (messages!=null) io.to(client.id).emit('showHistoryMessages', messages);
+        });
     });
     // client.on('disconnect', handleDisconnect)
     // client.on('error', handleError)

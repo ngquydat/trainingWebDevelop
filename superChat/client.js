@@ -152,32 +152,36 @@ app.controller('mypageController',['$scope','socket','$http','$state','$compile'
     });
     // Listen private messages
     socket.on('privateMessage', function(data){
-        var friend = data.receiver;
+        var chatbox = data.receiver;
         var isMyMsg = true;
         if ($scope.currentUser==data.receiver) {
-            friend = data.sender;
+            chatbox = data.sender;
             isMyMsg = false;
         }
-        showPrivateChatBox(friend);
+        showPrivateChatBox(chatbox);
+        insertPrivateMsg(chatbox, isMyMsg, data);
+    });
+    var insertPrivateMsg = function(chatbox, isMyMsg, msgData) {
         var pClass = isMyMsg?'right':'left';
         var div = document.createElement('div');
         div.innerHTML='<p class="private-message '+pClass+'">\
-                            <span class="username">'+data.sender+':</span>\
-                            <span class="text">'+data.msg+'</span>\
-                            <span class="timestamp"> ('+data.date+')</span>\
+                            <span class="username">'+msgData.sender+':</span>\
+                            <span class="text">'+msgData.message+'</span>\
+                            <span class="timestamp"> ('+getDate(new Date(msgData.date))+')</span>\
                         </p>';
-        console.log(friend);
-        $("#"+friend+"01 > .box-body")[0].appendChild(div);
-        $("#"+friend+"01 > .box-body")[0].scrollTop=$("#"+friend+"01 > .box-body")[0].scrollHeight;
-    });
+        $("#"+chatbox+"01 > .box-body")[0].appendChild(div);
+        $("#"+chatbox+"01 > .box-body")[0].scrollTop=$("#"+chatbox+"01 > .box-body")[0].scrollHeight;
+    };
     // Show private chat box
     $scope.showPrivateChatBox = function(username){
         showPrivateChatBox(username);
     };
     var showPrivateChatBox = function(username){
-        if ($("#"+username+"01").length > 0) return; 
+        if ($("#"+username+"01").length > 0) return;
         html='<div class="private-chat-box" id="'+username+'01">\
-                <div class="box-header">'+username+'</div>\
+                <div class="box-header" style="height:26px">'+username+'\
+                    <button ng-click="close_chat(\''+username+'\')" class="chat-header-button pull-right" type="button"><i class="glyphicon glyphicon-remove"></i></button>\
+                </div>\
                 <div class="box-body"></div>\
                 <div class="box-footer form-inline">\
                     <input type="text" placeholder="Type Message ..." class="form-control" ng-model="pmMsg'+username+'" my-enter="sendPrivateMessage(\''+username+'\',\'{{pmMsg'+username+'}}\')" style="width:100%">\
@@ -185,10 +189,28 @@ app.controller('mypageController',['$scope','socket','$http','$state','$compile'
             </div>';
         $('#private-chat-area').append(html);
         $compile($('#'+username+'01')[0])($scope);
+        socket.emit('showHistoryMessages', {user1:$scope.currentUser,user2:username});
     };
+    socket.on('showHistoryMessages', function(data){
+        for(var i in data){
+            var chatbox = data[i].receiver;
+            var isMyMsg = true;
+            if ($scope.currentUser==data[i].receiver) {
+                chatbox = data[i].sender;
+                isMyMsg = false;
+            }
+            insertPrivateMsg(chatbox, isMyMsg, data[i]);
+        }
+    });
+    // close chatbox
+    $scope.close_chat= function(username)
+    {
+        chat_box=$('#'+username+'01');
+        chat_box.remove();
+    }
     $scope.sendPrivateMessage = function(username, msg){
         console.log($scope.currentUser+" send a private messsage to "+username+": "+msg);
-        socket.emit('privateMessage', {username:username,msg:msg,date:getDate()});
+        socket.emit('privateMessage', {username:username,msg:msg,date:getDate(new Date())});
         $scope["pmMsg"+username]=null;
     };
     // Listen group messages
@@ -200,7 +222,7 @@ app.controller('mypageController',['$scope','socket','$http','$state','$compile'
         div.innerHTML='<p class="group-message '+pClass+'">\
                             <span class="username">'+data.username+':</span>\
                             <span class="text">'+data.groupMessage+'</span>\
-                            <span class="timestamp"> ('+getDate()+')</span>\
+                            <span class="timestamp"> ('+getDate(new Date())+')</span>\
                         </p>';
         document.getElementById("group-messages").appendChild(div);
         document.getElementById("group-messages").scrollTop=document.getElementById("group-messages").scrollHeight;
@@ -218,9 +240,8 @@ app.controller('mypageController',['$scope','socket','$http','$state','$compile'
     $scope.Logout = function() {
         $state.go('beforeLogin');
     };
-    var getDate=function(){
+    var getDate=function(date){
         monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October","November", "December"];
-        date = new Date();
         hour=date.getHours();
         period="AM";
         if (hour>12){
