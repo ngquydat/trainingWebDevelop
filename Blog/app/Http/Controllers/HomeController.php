@@ -25,7 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('Author')->orderBy('id', 'DESC')->get();
+        $posts = Post::with('Author')->orderBy('id', 'DESC')->paginate(5);
         return View::make('home')->with('posts',$posts);
     }
 }

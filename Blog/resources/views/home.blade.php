@@ -28,6 +28,7 @@
                             </article>
                         @endforeach
                         </section>
+                        {{$posts->links()}}
                     </section>
                 </div>
             </div>
