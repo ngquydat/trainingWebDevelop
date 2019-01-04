@@ -18,3 +18,5 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/admin'     , array('as' => 'admin_area'    , 'uses' => 'PostController@getAdmin'));
+Route::post('/add'      , array('as' => 'add_new_post'  , 'uses' => 'PostController@postAdd'));
