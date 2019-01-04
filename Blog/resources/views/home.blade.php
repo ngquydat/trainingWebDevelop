@@ -14,7 +14,21 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    You are logged in!<a class="btn btn-primary" href="{{URL('/admin')}}">{{ __('Thêm bình luận') }}</a>
+                </div>
+                <div style="padding: 10px">
+                    <section id="main">
+                        <section id="content">
+                        @foreach($posts as $post)
+                            <article>
+                                <h2>{{$post->title}}</h2>
+                                <p>{{$post->content}}</p>
+                                <p><small>Posted by <b>{{$post->Author->name}}</b> at <b>{{$post->created_at}}</b></small></p>
+                                <hr>
+                            </article>
+                        @endforeach
+                        </section>
+                    </section>
                 </div>
             </div>
         </div>
