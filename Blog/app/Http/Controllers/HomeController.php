@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use View;
+use App\Post;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $posts = Post::with('Author')->orderBy('id', 'DESC')->get();
+        return View::make('home')->with('posts',$posts);
     }
 }
