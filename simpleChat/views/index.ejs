@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
+    <link href="http://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <title>Simple Chat App</title>
+</head>
+
+<body>
+    <header>
+        <h1>Simple Chat App</h1>
+    </header>
+    <section class="login page">
+        <div class="form">
+            <h3 class="title">What's your nickname?</h3>
+            <input class="usernameInput" type="text" maxlength="14" />
+        </div>
+    </section>
+    <section class="chat page">
+        <div id="chatroom">
+            <div id="info" style="float:left"></div>
+            <div id="numUsers" style="float:right"></div>
+            <div id="messages" style="margin-top: 50px"></div>
+        </div>
+        <div id="input_zone">
+            <input id="inputMessage" class="vertical-align" type="text" placeholder="Type here..." />
+        </div>
+    </section>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="chat.js"></script>
+</body>
+
+</html>
