@@ -92,6 +92,11 @@ io.on('connection', (client) => {
     db.user.findOne({"username":client.username}, function(err,user){
         if (user!==null) io.to(client.id).emit('friendList', user.friends);
     });
+    // show history messages
+    db.messages.find({receiver:'group'}).sort({date: 1}).exec(function(err,data){
+        if(err) console.log(err);
+        if (data!=null) io.to(client.id).emit('showHistoryGroupMessages', data);
+    });
     // client.on('privateMessage', handlePrivateMessage)
     client.on('privateMessage', function(data){
         console.log(client.username+" send a private message to "+data.username+": "+data.msg);
@@ -106,9 +111,16 @@ io.on('connection', (client) => {
         io.to(clientIds[data.username]).emit('privateMessage', {sender:client.username,receiver:data.username,message:data.msg,date:data.date});
     });
     // client.on('groupMessage', handleGroupMessage)
-    client.on('groupMessage', function(msg){
-        console.log(client.username+" send a group message: "+msg);
-        io.emit('groupMessage', {username:client.username,groupMessage:msg});
+    client.on('groupMessage', function(data){
+        console.log(client.username+" send a group message to "+data.username+": "+data.msg);
+        // save msg to db
+        db.messages.create({
+                "message" :data.msg,
+                "sender"  :client.username,
+                "receiver":data.username,
+                "date"    :data.date
+        });
+        io.emit('groupMessage', {sender:client.username,receiver:data.username,message:data.msg,date:data.date});
     });
     // someone Typing
     client.on('groupChatTyping', function(){
@@ -118,10 +130,10 @@ io.on('connection', (client) => {
         io.emit('groupChatStopTyping', client.username);
     });
     // show history messages
-    client.on('showHistoryMessages', function(data){
+    client.on('showHistoryPrivateMessages', function(data){
         db.messages.find({$or:[{sender:data.user1,receiver:data.user2},{sender:data.user2,receiver:data.user1}]}).sort({date: 1}).exec(function(err,messages){
             if(err) console.log(err);
-            if (messages!=null) io.to(client.id).emit('showHistoryMessages', messages);
+            if (messages!=null) io.to(client.id).emit('showHistoryPrivateMessages', messages);
         });
     });
     // client.on('disconnect', handleDisconnect)

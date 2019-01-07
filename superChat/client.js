@@ -189,9 +189,9 @@ app.controller('mypageController',['$scope','socket','$http','$state','$compile'
             </div>';
         $('#private-chat-area').append(html);
         $compile($('#'+username+'01')[0])($scope);
-        socket.emit('showHistoryMessages', {user1:$scope.currentUser,user2:username});
+        socket.emit('showHistoryPrivateMessages', {user1:$scope.currentUser,user2:username});
     };
-    socket.on('showHistoryMessages', function(data){
+    socket.on('showHistoryPrivateMessages', function(data){
         for(var i in data){
             var chatbox = data[i].receiver;
             var isMyMsg = true;
@@ -215,23 +215,34 @@ app.controller('mypageController',['$scope','socket','$http','$state','$compile'
     };
     // Listen group messages
     socket.on('groupMessage', function(data){
-        var div = document.createElement('div');
-        var isMyMsg = false;
-        if ($scope.currentUser == data.username) isMyMsg = true;
-        var pClass = isMyMsg?'right':'left';
-        div.innerHTML='<p class="group-message '+pClass+'">\
-                            <span class="username">'+data.username+':</span>\
-                            <span class="text">'+data.groupMessage+'</span>\
-                            <span class="timestamp"> ('+getDate(new Date())+')</span>\
-                        </p>';
-        document.getElementById("group-messages").appendChild(div);
-        document.getElementById("group-messages").scrollTop=document.getElementById("group-messages").scrollHeight;
+        insertGroupMsg(data);
     });
+    socket.on('showHistoryGroupMessages', function(data){
+        for(var i in data){
+            insertGroupMsg(data[i]);
+        }
+    });
+    var insertGroupMsg = function(data) {
+        var isMyMsg = true;
+        if ($scope.currentUser!==data.sender) {
+            isMyMsg = false;
+        }
+        var chatbox = 'group-messages';
+        var pClass = isMyMsg?'right':'left';
+        var div = document.createElement('div');
+        div.innerHTML='<p class="group-message '+pClass+'">\
+                            <span class="username">'+data.sender+':</span>\
+                            <span class="text">'+data.message+'</span>\
+                            <span class="timestamp"> ('+getDate(new Date(data.date))+')</span>\
+                        </p>';
+        $("#"+chatbox)[0].appendChild(div);
+        $("#"+chatbox)[0].scrollTop=$("#"+chatbox)[0].scrollHeight;
+    }
     // Listen friend request confirm
     // Listen friend established
     // Emit group message
-    $scope.sendGroupMessage = function(message){
-        socket.emit('groupMessage', message);
+    $scope.sendGroupMessage = function(msg){
+        socket.emit('groupMessage', {username:'group',msg:msg,date:getDate(new Date())});
         $scope.groupMessage=null;
     };
 
